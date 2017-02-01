@@ -1,5 +1,3 @@
-require_relative './block'
-
 class Block
   attr_reader :x, :y, :scale, :speed_modif, :destructible
 

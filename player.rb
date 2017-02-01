@@ -1,3 +1,5 @@
+require 'gosu'
+
 class Player
   attr_reader :x, :y
 

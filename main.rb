@@ -17,6 +17,8 @@ class Game < Gosu::Window
         @rolling_speed = 50
         @rolling_increment = 2
         @rolling_limit = 150
+        @bombs = 0
+        @coins = 0
     end
 
     def draw
@@ -55,6 +57,16 @@ class Game < Gosu::Window
 
     def stop_time(pause_length)
       @pause_end = pause_length + Gosu::milliseconds / 1000.0
+    end
+
+    def add_bomb()
+      @bombs += 1
+      p "#{@bombs} bombs"
+    end
+
+    def add_coin()
+      @coins += 1
+      p "#{@coins} coins"
     end
 end
 

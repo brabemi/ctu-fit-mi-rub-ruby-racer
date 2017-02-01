@@ -1,16 +1,17 @@
-class Pause
+require 'gosu'
+
+class PowerUP
   attr_reader :x, :y, :used
 
   def initialize(x, y, game)
     @x, @y = x, y
     @game = game
-    @scale = 0.5
+    @scale = 1
     @used = false
     @anim_speed = 200
-    @frames = [Gosu::Image::new('media/power_ups/pause.png')]
-    @height = @frames[0].height
-    @width = @frames[0].width
-    @pause_length = 3
+    @frames = []
+    @height = 0
+    @width = 0
   end
 
   def height
@@ -28,9 +29,12 @@ class Pause
       if x_mid > player.x && x_mid < player.x + player.width &&
          y_mid > player.y && y_mid < player.y + player.height
         @used = true
-        @game.stop_time(@pause_length)
+        self.action
       end
     end
+  end
+
+  def action
   end
 
   def update_delta(delta, rolled, player)
