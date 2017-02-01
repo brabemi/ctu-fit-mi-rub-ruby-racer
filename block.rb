@@ -5,8 +5,18 @@ class Block
     @x = x
     @y = y
     @destructable = destructable
-    @scale = 0.15
+    @scale = 0.10
     @block = Gosu::Image::new('media/blocks/wood.png')
+    @width = @block.width
+    @height = @block.height
+  end
+
+  def height
+    @scale*@height
+  end
+
+  def width
+    @scale*@width
   end
 
   def draw

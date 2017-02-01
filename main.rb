@@ -12,11 +12,10 @@ class Game < Gosu::Window
 
         @last_milliseconds = 0
 
-        @player = Player.new
-        @tower = Tower.new(1200, 800)
-        @components = [@player, @tower].flatten
+        @tower = Tower.new(self)
+        @components = [@tower].flatten
         @rolling_speed = 50
-        @rolling_increment = 10
+        @rolling_increment = 1
     end
 
     def draw
@@ -46,7 +45,7 @@ class Game < Gosu::Window
         @delta = [current_time - @last_milliseconds, 0.25].min
         @last_milliseconds = current_time
         @components.each { |c| c.update_delta(@delta, @rolling_speed*@delta) }
-        @rolling_speed += @delta*@rolling_increment
+        @rolling_speed += @delta*@rolling_increment if @rolling_speed < 150
     end
 end
 
