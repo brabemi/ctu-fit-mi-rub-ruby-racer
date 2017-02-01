@@ -1,10 +1,10 @@
 class Player
-  attr_accessor :x, :y
+  attr_reader :x, :y
 
   def initialize(x, y, game)
     @x, @y = x, y
     @game = game
-    @scale = 0.125
+    @scale = 0.12
     @speed = 250
     @anim_speed = 150
     @fall_speed = 300
@@ -43,24 +43,38 @@ class Player
   def collide_y(blocks)
     blocks.each do |b|
       if (b.x+b.width >= @x) && (b.x < @x+self.width)
-        return true if (b.y < @y+self.height) && (b.y+b.height > @y+self.height)
-        return true if (b.y < @y) && (b.y+b.height > @y)
+        return b.speed_modif if (b.y < @y+self.height) && (b.y+b.height > @y+self.height)
+        return 1 if (b.y < @y) && (b.y+b.height > @y)
       end
     end
-    false
+    0
   end
 
   def update_delta(delta, rolled, blocks)
     y_old = @y
+
+    if @fall_speed >= 300
+      @fall_speed = -150 if Gosu::button_down? Gosu::KbSpace
+    else
+       @fall_speed += 300*delta
+    end
+
     @y += delta * @fall_speed
-    @state = :jump_fall
-    if collide_y(blocks)
+
+    @fall_speed<0 ? @state = :jump_up : @state = :jump_fall
+
+    speed_modif = 1
+    coll_res = collide_y(blocks)
+    if coll_res > 0
+      speed_modif = coll_res
       @y = y_old
       @state = :idle
+      @fall_speed = 300
     end
     @y = y_old if @y+self.height > @game.height
+
     x_old = @x
-    distance = delta * @speed
+    distance = speed_modif * delta * @speed
     # @state = :idle
     if Gosu::button_down? Gosu::KbLeft
       @x -= distance
@@ -80,8 +94,8 @@ class Player
   def draw
     action = @direction[@state]
     frame = action[Gosu::milliseconds / @anim_speed % action.size]
-    @width = frame.width
-    @height = frame.height
+    # @width = frame.width
+    # @height = frame.height
     frame.draw(@x, @y, 0, @scale, @scale)
   end
 end

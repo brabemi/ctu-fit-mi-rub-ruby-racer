@@ -1,14 +1,17 @@
-class Block
-  attr_reader :x, :y, :scale
+require_relative './block'
 
-  def initialize(x, y, destructable = true)
+class Block
+  attr_reader :x, :y, :scale, :speed_modif, :destructible
+
+  def initialize(x, y, destructible = true)
     @x = x
     @y = y
-    @destructable = destructable
-    @scale = 0.10
-    @block = Gosu::Image::new('media/blocks/wood.png')
-    @width = @block.width
-    @height = @block.height
+    @destructible
+    @scale = 0
+    @block = nil
+    @width = 0
+    @height = 0
+    @speed_modif = 1
   end
 
   def height

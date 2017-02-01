@@ -1,6 +1,5 @@
 # require 'rubygems'
 require 'gosu'
-require_relative './player'
 require_relative './tower'
 
 class Game < Gosu::Window
@@ -11,11 +10,13 @@ class Game < Gosu::Window
         # @background = Gosu::Image.new(self, 'media/bg.png')
 
         @last_milliseconds = 0
+        @pause_end = 0
 
         @tower = Tower.new(self)
         @components = [@tower].flatten
         @rolling_speed = 50
-        @rolling_increment = 1
+        @rolling_increment = 2
+        @rolling_limit = 150
     end
 
     def draw
@@ -44,8 +45,16 @@ class Game < Gosu::Window
         # clamping here is important to avoid strange behaviors
         @delta = [current_time - @last_milliseconds, 0.25].min
         @last_milliseconds = current_time
-        @components.each { |c| c.update_delta(@delta, @rolling_speed*@delta) }
-        @rolling_speed += @delta*@rolling_increment if @rolling_speed < 150
+        rolled = 0
+        if current_time > @pause_end
+          rolled = @rolling_speed*@delta
+          @rolling_speed += @delta*@rolling_increment if @rolling_speed < @rolling_limit
+        end
+        @components.each { |c| c.update_delta(@delta, rolled) }
+    end
+
+    def stop_time(pause_length)
+      @pause_end = pause_length + Gosu::milliseconds / 1000.0
     end
 end
 
