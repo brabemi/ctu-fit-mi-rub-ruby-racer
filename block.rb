@@ -4,7 +4,7 @@ class Block
   def initialize(x, y, destructible = true)
     @x = x
     @y = y
-    @destructible
+    @destructible = destructible
     @scale = 0
     @block = nil
     @width = 0

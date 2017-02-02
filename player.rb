@@ -32,6 +32,11 @@ class Player
     @scale*@width
   end
 
+  def flash(x, y)
+    @x = x
+    @y = y
+  end
+
   def collide_x(blocks)
     blocks.each do |b|
       if (b.y+b.height >= @y) && (b.y < @y+self.height)
@@ -77,7 +82,6 @@ class Player
 
     x_old = @x
     distance = speed_modif * delta * @speed
-    # @state = :idle
     if Gosu::button_down? Gosu::KbLeft
       @x -= distance
       @state = :run
@@ -91,11 +95,14 @@ class Player
     @x = x_old if collide_x(blocks)
 
     @y -= rolled
+
+    @game.out_of_screen if @y + self.height < 0
   end
 
   def draw
     action = @direction[@state]
     frame = action[Gosu::milliseconds / @anim_speed % action.size]
+    # @direction[@state][Gosu::milliseconds / @anim_speed % @direction[@state].size].draw(@x, @y, 0, @scale, @scale)
     # @width = frame.width
     # @height = frame.height
     frame.draw(@x, @y, 0, @scale, @scale)

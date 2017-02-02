@@ -9,10 +9,9 @@ class Pause < PowerUP
     @frames = [Gosu::Image::new('media/power_ups/pause.png')]
     @height = @frames[0].height
     @width = @frames[0].width
-    @pause_length = 3
   end
 
   def action
-    @game.stop_time(@pause_length)
+    @game.add_pause
   end
 end
