@@ -6,6 +6,7 @@ require_relative './pause'
 require_relative './bomb'
 require_relative './coin'
 require_relative './ruby'
+require_relative './explosion'
 
 class Tower
   def initialize(game)
@@ -16,6 +17,7 @@ class Tower
     @block_size = 50
     @blocks = []
     @power_ups = []
+    @effects = []
     @width_in_blocks = @width/@block_size
     @last_line = 0
     @prng = Random.new
@@ -66,11 +68,13 @@ class Tower
     @player.draw
     @blocks.each { |e| e.draw }
     @power_ups.each { |e| e.draw }
+    @effects.each { |e| e.draw }
   end
 
   def detonation(radius)
     x = @player.x + @player.width/2
     y = @player.y + @player.height
+    @effects.push(Explosion.new(x,y))
     @blocks.select! do |b|
       b_x = b.x + b.width/2
       b_y = b.y + b.height/2
@@ -91,10 +95,12 @@ class Tower
       generate_row
       @blocks.select! { |e| e.y >= -1 * @block_size }
       @power_ups.select! { |e| e.y >= -1 * @block_size || !e.used }
+      @effects.select! { |e| e.y >= -1 * @block_size }
     end
     @last_line -= rolled
     @player.update_delta(delta, rolled, @blocks)
     @blocks.each { |e| e.update_delta(delta, rolled) }
     @power_ups.each { |e| e.update_delta(delta, rolled, @player) }
+    @effects.each { |e| e.update_delta(delta, rolled, @player) }
   end
 end

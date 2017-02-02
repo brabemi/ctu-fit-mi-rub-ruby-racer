@@ -31,7 +31,8 @@ class Game < Gosu::Window
         @tower = Tower.new(self)
         @components = [@tower].flatten
 
-        @rolling_speed = 50
+        @basic_rolling_speed = 50
+        @rolling_speed = @basic_rolling_speed
         @rolling_increment = 2
         @rolling_limit = 125
 
@@ -129,7 +130,7 @@ class Game < Gosu::Window
     end
 
     def stop_time
-      @pause_end = @last_milliseconds + 3
+      @pause_end = @last_milliseconds + 4
       @pauses -= 1
     end
 
@@ -145,13 +146,13 @@ class Game < Gosu::Window
       @subliminal_end = @last_milliseconds + 0.03
       @rubies -= 1
       @tower.flash
+      @rolling_speed = @basic_rolling_speed
     end
 
     def out_of_screen
       if @rubies > 0
         self.flash
       else
-        p 'Game over' if @state == :active
         @state = :over
         @gameover_sound.play(true)
       end
