@@ -7,13 +7,13 @@ require_relative './bomb'
 require_relative './coin'
 require_relative './ruby'
 require_relative './explosion'
+require_relative './flash'
 
 class Tower
   def initialize(game)
     @game = game
     @width = game.width
     @height = game.height
-    # get from block, width and height
     @block_size = 50
     @blocks = []
     @power_ups = []
@@ -22,7 +22,7 @@ class Tower
     @last_line = 0
     @prng = Random.new
     @player = Player.new(@width/2, 5.1*@block_size, @game)
-    5.times { |_| generate_row }
+    6.times { |_| generate_row }
   end
 
   def generate_row
@@ -87,6 +87,8 @@ class Tower
     while (y + 1.1*@block_size) > @height
       y -= 3*@block_size
     end
+    @effects.push(Flash.new(@player.x + @player.width/2, @player.y + @player.height))
+    @effects.push(Flash.new(@width/2 + @player.width/2, y+@block_size))
     @player.flash(@width/2, y+@block_size - 1.2*@player.height)
   end
 
