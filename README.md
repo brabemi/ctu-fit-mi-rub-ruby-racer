@@ -4,19 +4,14 @@ Simple 2D platformer game
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Build gem:
 
-```ruby
-gem 'racer'
-```
+    $ gem build racer.gemspec
 
-And then execute:
 
-    $ bundle
+And then install:
 
-Or install it yourself as:
-
-    $ gem install racer
+    $ gem install racer-0.1.0.gem
 
 ## Usage
 
