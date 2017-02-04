@@ -1,16 +1,17 @@
 require 'gosu'
 
-class Flash
+class Explosion
   attr_reader :x, :y
 
   def initialize(x, y)
     @x, @y = x, y
     @scale = 1.2
-    @anim_speed = 20
-    @frames = Gosu::Image::load_tiles('media/power_ups/flash.png', 128, 128)
+    @anim_speed = 70
+    @base_path = File.expand_path('../../..', __FILE__) + '/'
+    @frames = Gosu::Image::load_tiles(@base_path + 'media/power_ups/explosion.png', 64, 64)
     @height = @frames[0].height
     @width = @frames[0].width
-    @frame = 2
+    @frame = 0
     @last_frame_change = Gosu::milliseconds
   end
 
@@ -32,7 +33,7 @@ class Flash
       @last_frame_change = Gosu::milliseconds
     end
     if @frame < @frames.length
-      @frames[@frame].draw(@x-self.width/2, @y-(3*self.height/4), 1, @scale, @scale)
+      @frames[@frame].draw(@x-self.width/2, @y, 1, @scale, @scale)
     end
   end
 end

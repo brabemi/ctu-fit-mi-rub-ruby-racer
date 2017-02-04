@@ -1,12 +1,11 @@
 require_relative './block'
-class BrickBlock < Block
+class WoodBlock < Block
   def initialize(x, y, destructible = true)
     super(x, y, destructible)
-    @destructible = false
     @scale = 0.10
-    @block = Gosu::Image::new('media/blocks/brick.png')
+    @block = Gosu::Image::new(@base_path + 'media/blocks/wood.png')
     @width = @block.width
     @height = @block.height
-    @speed_modif = 1.25
+    @speed_modif = 1
   end
 end

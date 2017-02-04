@@ -1,8 +1,8 @@
-# require 'rubygems'
 require 'gosu'
-require_relative './tower'
+require 'racer/tower'
 
-class Game < Gosu::Window
+module Racer
+  class Game < Gosu::Window
     def initialize
         super(1200, 800, true)
         self.caption = 'MI-RUB'
@@ -11,22 +11,24 @@ class Game < Gosu::Window
         @font2 = Gosu::Font.new(self, 'Arial', 300)
         @big_font = Gosu::Font.new(self, 'Arial', 280)
 
-        @background = Gosu::Image.new(self, 'media/bg.png')
-        @bomb_img = Gosu::Image.new(self, 'media/power_ups/bomb2.png')
-        @ruby_img = Gosu::Image.new(self, 'media/power_ups/ruby.png')
-        @pause_img = Gosu::Image.new(self, 'media/power_ups/pause.png')
+        @base_path = File.expand_path('../..', __FILE__) + '/'
+        @background = Gosu::Image.new(self, @base_path + '/media/bg.png')
+        @bomb_img = Gosu::Image.new(self, @base_path + 'media/power_ups/bomb2.png')
+        @ruby_img = Gosu::Image.new(self, @base_path +  'media/power_ups/ruby.png')
+        @pause_img = Gosu::Image.new(self, @base_path +  'media/power_ups/pause.png')
         @bg_scale_x = (1.0 * self.width) / @background.width
         @bg_scale_y = (1.0 * self.height) / @background.height
 
-        @theme_sound = Gosu::Song.new('media/music/theme.ogg')
-        @bomb_sound = Gosu::Song.new('media/music/bomb.ogg')
-        @coin_sound = Gosu::Song.new('media/music/coin.ogg')
-        @gameover_sound = Gosu::Song.new('media/music/gameover.ogg')
+        @theme_sound = Gosu::Song.new(@base_path + 'media/music/theme.ogg')
+        @bomb_sound = Gosu::Sample.new(@base_path + 'media/music/bomb.ogg')
+        @coin_sound = Gosu::Sample.new(@base_path + 'media/music/coin.ogg')
+        @gameover_sound = Gosu::Song.new(@base_path + 'media/music/gameover.ogg')
 
         @last_milliseconds = 0
         @detonation_end = 0
         @pause_end = 3
-        @subliminal_end = 0
+        @subliminal_start = 0
+        @subliminal = false
 
         @tower = Tower.new(self)
         @components = [@tower].flatten
@@ -71,15 +73,14 @@ class Game < Gosu::Window
         width *= scale_x
         @font2.draw(text, 600 - width/2, 400 - height/2, 2, scale_x, 1, Gosu::Color::YELLOW)
       end
-      if @subliminal_end > @last_milliseconds
+      if @subliminal
+        @subliminal = false if @subliminal_start + 0.05 < @last_milliseconds
         width = @big_font.text_width("A")*5
         height = @big_font.height*5
         @big_font.draw("A", 600-width/2, 525-height/2 , 2, 5, 5, 0x80_ffffff)
       end
     end
 
-    # this is a callback for key up events or equivalent (there are
-    # constants for gamepad buttons and mouse clicks)
     def button_up(key)
         self.close if key == Gosu::KbEscape
         self.bomb_detonate if key == Gosu::KbD && @bombs > 0 && @detonation_end < @last_milliseconds
@@ -95,14 +96,13 @@ class Game < Gosu::Window
 
     def update_delta
       unless @paused
-        # Gosu::millisecodns returns the time since the window was created
-        # Divide by 1000 since we want to work in seconds
         @theme_sound.play(true) unless Gosu::Song.current_song
+
         current_time = Gosu::milliseconds / 1000.0
-        # clamping here is important to avoid strange behaviors
         @delta = [current_time - @last_milliseconds, 0.25].min
         @last_milliseconds = current_time
         rolled = 0
+
         if current_time > @pause_end
           rolled = @rolling_speed*@delta
           @score += rolled if @state == :active
@@ -114,28 +114,24 @@ class Game < Gosu::Window
 
     def add_pause
       @pauses += 1
-      @theme_sound.pause
       @coin_sound.play
     end
 
     def add_bomb
       @bombs += 1
-      @theme_sound.pause
       @coin_sound.play
     end
 
     def add_coin
       @coins += 1
       @score += 10*@rolling_limit
-      @theme_sound.pause
       @coin_sound.play
     end
 
     def add_ruby
-      # TODO Subliminal advertising
       @rubies += 1
-      @subliminal_end = @last_milliseconds + 0.03
-      @theme_sound.pause
+      @subliminal_start = @last_milliseconds
+      @subliminal = true
       @coin_sound.play
     end
 
@@ -147,14 +143,14 @@ class Game < Gosu::Window
     def bomb_detonate
       @detonation_end = @last_milliseconds + 0.5
       @bombs -= 1
-      @theme_sound.pause
       @bomb_sound.play
       @tower.detonation(75)
     end
 
     def flash
       @pause_end = (@pause_end > @last_milliseconds ? @pause_end : @last_milliseconds) + 0.5
-      @subliminal_end = @last_milliseconds + 0.03
+      @subliminal_start = @last_milliseconds
+      @subliminal = true
       @rubies -= 1
       @tower.flash
       @rolling_speed = @basic_rolling_speed
@@ -168,7 +164,5 @@ class Game < Gosu::Window
         @gameover_sound.play(true)
       end
     end
+  end
 end
-
-game = Game.new
-game.show

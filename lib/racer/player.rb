@@ -10,14 +10,15 @@ class Player
     @speed = 250
     @anim_speed = 150
     @fall_speed = 300
-    @right = { idle: [], run: [], jump_up: [Gosu::Image::new('media/character/jump up/frame.png')],
-      jump_fall: [Gosu::Image::new('media/character/jump fall/frame.png')] }
-    2.times { |i| @right[:idle] << Gosu::Image::new("media/character/idle/frame-#{i+1}.png") }
-    4.times { |i| @right[:run] << Gosu::Image::new("media/character/run/frame-#{i+1}.png") }
-    @left = { idle: [], run: [], jump_up: [Gosu::Image::new('media/character/jump up/l-frame.png')],
-      jump_fall: [Gosu::Image::new('media/character/jump fall/l-frame.png')] }
-    2.times { |i| @left[:idle] << Gosu::Image::new("media/character/idle/l-frame-#{i+1}.png") }
-    4.times { |i| @left[:run] << Gosu::Image::new("media/character/run/l-frame-#{i+1}.png") }
+    @base_path = File.expand_path('../../..', __FILE__) + '/'
+    @right = { idle: [], run: [], jump_up: [Gosu::Image::new(@base_path + 'media/character/jump up/frame.png')],
+      jump_fall: [Gosu::Image::new(@base_path + 'media/character/jump fall/frame.png')] }
+    2.times { |i| @right[:idle] << Gosu::Image::new(@base_path + "media/character/idle/frame-#{i+1}.png") }
+    4.times { |i| @right[:run] << Gosu::Image::new(@base_path + "media/character/run/frame-#{i+1}.png") }
+    @left = { idle: [], run: [], jump_up: [Gosu::Image::new(@base_path + 'media/character/jump up/l-frame.png')],
+      jump_fall: [Gosu::Image::new(@base_path + 'media/character/jump fall/l-frame.png')] }
+    2.times { |i| @left[:idle] << Gosu::Image::new(@base_path + "media/character/idle/l-frame-#{i+1}.png") }
+    4.times { |i| @left[:run] << Gosu::Image::new(@base_path + "media/character/run/l-frame-#{i+1}.png") }
     @state = :idle
     @direction = @right
     @width = @direction[@state][0].width
@@ -49,7 +50,7 @@ class Player
 
   def collide_y(blocks)
     blocks.each do |b|
-      if (b.x+b.width >= @x) && (b.x < @x+self.width)
+      if ((b.x+b.width) >= @x) && (b.x < (@x+self.width))
         return b.speed_modif if (b.y < @y+self.height) && (b.y+b.height > @y+self.height)
         return 1 if (b.y < @y) && (b.y+b.height > @y)
       end
@@ -84,12 +85,12 @@ class Player
     distance = speed_modif * delta * @speed
     if Gosu::button_down? Gosu::KbLeft
       @x -= distance
-      @state = :run
+      @state = :run if @state == :idle
       @direction = @left
     end
     if Gosu::button_down? Gosu::KbRight
       @x += distance
-      @state = :run
+      @state = :run if @state == :idle
       @direction = @right
     end
     @x = x_old if collide_x(blocks)

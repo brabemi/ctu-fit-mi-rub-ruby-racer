@@ -10,6 +10,7 @@ class Block
     @width = 0
     @height = 0
     @speed_modif = 1
+    @base_path = File.expand_path('../../..', __FILE__) + '/'
   end
 
   def height

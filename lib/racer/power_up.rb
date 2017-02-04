@@ -12,6 +12,7 @@ class PowerUP
     @frames = []
     @height = 0
     @width = 0
+    @base_path = File.expand_path('../../..', __FILE__) + '/'
   end
 
   def height

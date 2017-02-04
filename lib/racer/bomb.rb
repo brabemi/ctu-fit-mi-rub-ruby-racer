@@ -6,7 +6,7 @@ class Bomb < PowerUP
   def initialize(x, y, game)
     super(x, y, game)
     @scale = 0.04
-    @frames = [Gosu::Image::new('media/power_ups/bomb2.png')]
+    @frames = [Gosu::Image::new(@base_path + 'media/power_ups/bomb2.png')]
     @height = @frames[0].height
     @width = @frames[0].width
   end
