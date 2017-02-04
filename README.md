@@ -33,16 +33,54 @@ Start game by typing:
 |  Space  |  Jump  |
 |  S  |  Use pause item  |
 |  D  |  Use bomb  |
-|  F  |  Use ruby  |
+|  F  |  Use ruby (ruby is used automatically when the player is rolled out of screen)  |
 |  P  |  Pause game  |
 |  O  |  Unpause game  |
 
 ## Items
 
 ### Ruby
-![Ruby](./media/power_ups/ruby.png =30x30)
 
+ - Teleport to the last floor
+ - Slow down rolling
+ 
+<img src="media/power_ups/ruby.png" width="48">
 
+### Bomb
+
+ - Blows up few blocks under the player
+ 
+<img src="media/power_ups/bomb2.png" width="48">
+
+### Pause
+
+ - Pause rolling for 4s
+ 
+<img src="media/power_ups/pause.png" width="48">
+
+### Coin
+
+ - Increase your score by amount of points equal to 10s of rolling on the highest speed
+
+## Blocks
+
+### Wood block
+
+ - Destructible, normal speed
+ 
+<img src="media/blocks/wood.png" width="48">
+
+### Mossy block
+
+ - Destructible, Slow down (75% speed)
+ 
+<img src="media/blocks/moss.png" width="48">
+
+### Brick block
+
+ - Inestructible, Speed up (125% speed)
+ 
+<img src="media/blocks/brick.png" width="48">
 
 ## Development
 
