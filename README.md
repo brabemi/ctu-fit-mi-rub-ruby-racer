@@ -36,6 +36,7 @@ Start game by typing:
 |  F  |  Use ruby (ruby is used automatically when the player is rolled out of screen)  |
 |  P  |  Pause game  |
 |  O  |  Unpause game  |
+|  Esc  |  Exit game  |
 
 ## Items
 
