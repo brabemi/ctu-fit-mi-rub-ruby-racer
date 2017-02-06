@@ -23,12 +23,13 @@ Gem::Specification.new do |spec|
       "public gem pushes."
   end
 
-  spec.files         = Dir.glob("{bin,lib,media}/**/*") + %w(Gemfile LICENSE.txt Rakefile README.md)
+  spec.files         = Dir.glob("{bin,lib,media,spec}/**/*") + %w(Gemfile LICENSE.txt Rakefile README.md)
   spec.bindir        = "bin"
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
   spec.add_development_dependency "bundler", "~> 1.13"
   spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "rspec", "~> 3.5", ">= 3.5.0"
   spec.add_dependency "gosu", "~> 0.10.8"
 end

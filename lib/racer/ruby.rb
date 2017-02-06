@@ -1,8 +1,6 @@
 require_relative './power_up'
 
 class Ruby < PowerUP
-  attr_reader :x, :y, :used
-
   def initialize(x, y, game)
     super(x, y, game)
     @scale = 0.03

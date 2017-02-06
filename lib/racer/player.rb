@@ -84,7 +84,7 @@ class Player
 
   def update_delta(delta, rolled, blocks)
     # smooth falling
-    delta_incr = 10.0/@fall_speed.abs
+    delta_incr = self.height/4/@fall_speed.abs
     tmp_delta = delta_incr
     while tmp_delta < delta do
       move_in_y(delta_incr, blocks)

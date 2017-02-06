@@ -23,7 +23,7 @@ class Flash
     @scale*@width
   end
 
-  def update_delta(delta, rolled, player)
+  def update_delta(delta, rolled)
     @y -= rolled
   end
 

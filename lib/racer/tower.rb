@@ -103,6 +103,6 @@ class Tower
     @player.update_delta(delta, rolled, @blocks)
     @blocks.each { |e| e.update_delta(delta, rolled) }
     @power_ups.each { |e| e.update_delta(delta, rolled, @player) }
-    @effects.each { |e| e.update_delta(delta, rolled, @player) }
+    @effects.each { |e| e.update_delta(delta, rolled) }
   end
 end
