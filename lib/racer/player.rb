@@ -8,6 +8,7 @@ class Player
     @game = game
     @scale = 0.12
     @speed = 250
+    @speed_modif = 1
     @anim_speed = 150
     @fall_speed = 300
     @base_path = File.expand_path('../../..', __FILE__) + '/'
@@ -58,9 +59,8 @@ class Player
     0
   end
 
-  def update_delta(delta, rolled, blocks)
+  def move_in_y(delta, blocks)
     y_old = @y
-
     if @fall_speed >= 300
       @fall_speed = -150 if Gosu::button_down? Gosu::KbSpace
     else
@@ -71,18 +71,29 @@ class Player
 
     @fall_speed<0 ? @state = :jump_up : @state = :jump_fall
 
-    speed_modif = 1
+    @speed_modif = 1
     coll_res = collide_y(blocks)
     if coll_res > 0
-      speed_modif = coll_res
+      @speed_modif = coll_res
       @y = y_old
       @state = :idle
       @fall_speed = 300
     end
     @y = y_old if @y+self.height > @game.height
+  end
+
+  def update_delta(delta, rolled, blocks)
+    # smooth falling
+    delta_incr = 10.0/@fall_speed.abs
+    tmp_delta = delta_incr
+    while tmp_delta < delta do
+      move_in_y(delta_incr, blocks)
+      tmp_delta += delta_incr
+    end
+    move_in_y(delta%delta_incr, blocks)
 
     x_old = @x
-    distance = speed_modif * delta * @speed
+    distance = @speed_modif * delta * @speed
     if Gosu::button_down? Gosu::KbLeft
       @x -= distance
       @state = :run if @state == :idle
@@ -102,10 +113,7 @@ class Player
 
   def draw
     action = @direction[@state]
-    frame = action[Gosu::milliseconds / @anim_speed % action.size]
-    # @direction[@state][Gosu::milliseconds / @anim_speed % @direction[@state].size].draw(@x, @y, 0, @scale, @scale)
-    # @width = frame.width
-    # @height = frame.height
+    frame = action[Gosu::milliseconds / (@anim_speed / @speed_modif) % action.size]
     frame.draw(@x, @y, 0, @scale, @scale)
   end
 end

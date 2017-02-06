@@ -99,7 +99,7 @@ module Racer
         @theme_sound.play(true) unless Gosu::Song.current_song
 
         current_time = Gosu::milliseconds / 1000.0
-        @delta = [current_time - @last_milliseconds, 0.25].min
+        @delta = [current_time - @last_milliseconds, 0.10].min
         @last_milliseconds = current_time
         rolled = 0
 
